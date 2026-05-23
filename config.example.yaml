@@ -121,6 +121,11 @@ routing:
   session-affinity: false # default: false
   # How long session-to-auth bindings are retained. Default: 1h
   session-affinity-ttl: "1h"
+  # When true, enable health-aware routing that proactively deprioritizes credentials
+  # showing signs of exhaustion (high recent failure rate, consecutive failures, or
+  # recent quota errors). Available auths are sorted by internal health score before
+  # selection, so healthier accounts are preferred. Default: false.
+  health-aware: false
 
 # When true, enable authentication for the WebSocket API (/v1/ws).
 ws-auth: true

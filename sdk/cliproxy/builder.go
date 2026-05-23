@@ -237,6 +237,11 @@ func (b *Builder) Build() (*Service, error) {
 			})
 		}
 
+		// Enable health-aware routing if configured.
+		if b.cfg != nil {
+			coreauth.SetHealthAwareRouting(b.cfg.Routing.HealthAware)
+		}
+
 		coreManager = coreauth.NewManager(tokenStore, selector, nil)
 	}
 	// Attach a default RoundTripper provider so providers can opt-in per-auth transports.

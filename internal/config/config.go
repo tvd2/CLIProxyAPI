@@ -238,6 +238,12 @@ type RoutingConfig struct {
 	// SessionAffinityTTL specifies how long session-to-auth bindings are retained.
 	// Default: 1h. Accepts duration strings like "30m", "1h", "2h30m".
 	SessionAffinityTTL string `yaml:"session-affinity-ttl,omitempty" json:"session-affinity-ttl,omitempty"`
+
+	// HealthAware enables smart health-aware routing that proactively deprioritizes
+	// credentials showing signs of exhaustion (high recent failure rate, consecutive
+	// failures, or recent quota errors). When enabled, available auths are sorted
+	// by internal health score before selection. Default: false.
+	HealthAware bool `yaml:"health-aware,omitempty" json:"health-aware,omitempty"`
 }
 
 // OAuthModelAlias defines a model ID alias for a specific channel.

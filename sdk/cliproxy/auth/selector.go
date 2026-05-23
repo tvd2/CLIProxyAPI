@@ -23,6 +23,16 @@ import (
 	cliproxyexecutor "github.com/router-for-me/CLIProxyAPI/v7/sdk/cliproxy/executor"
 )
 
+// healthAwareRoutingEnabled controls whether getAvailableAuths re-orders available
+// credentials by descending health score before passing them to selectors.
+// Set via SetHealthAwareRouting(true) when the server config enables it.
+var healthAwareRoutingEnabled bool
+
+// SetHealthAwareRouting enables or disables health-aware auth ordering.
+func SetHealthAwareRouting(enabled bool) {
+	healthAwareRoutingEnabled = enabled
+}
+
 // RoundRobinSelector provides a simple provider scoped round-robin selection strategy.
 type RoundRobinSelector struct {
 	mu      sync.Mutex
@@ -251,9 +261,15 @@ func getAvailableAuths(auths []*Auth, provider, model string, now time.Time) ([]
 	if len(available) > 1 {
 		sort.Slice(available, func(i, j int) bool { return available[i].ID < available[j].ID })
 	}
+
+	// When health-aware routing is enabled, re-order available auths by descending
+	// health score (healthiest first) while preserving priority grouping.
+	if healthAwareRoutingEnabled && len(available) > 1 {
+		sortAuthsByHealth(available, now)
+	}
+
 	return available, nil
 }
-
 // Pick selects the next available auth for the provider in a round-robin manner.
 // For gemini-cli virtual auths (identified by the gemini_virtual_parent attribute),
 // a two-level round-robin is used: first cycling across credential groups (parent

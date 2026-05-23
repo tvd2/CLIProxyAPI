@@ -2272,8 +2272,14 @@ func (m *Manager) MarkResult(ctx context.Context, result Result) {
 		now := time.Now()
 		auth.recordRecentRequest(now, result.Success)
 		if result.Success {
+			AuthRecordSuccess(auth)
 			auth.Success++
 		} else {
+			errCode := ""
+			if result.Error != nil {
+				errCode = result.Error.Code
+			}
+			AuthRecordFailure(auth, errCode)
 			auth.Failed++
 		}
 

@@ -537,16 +537,21 @@ func (s *Service) applyConfigUpdate(newCfg *config.Config) {
 					ttl = parsed
 				}
 			}
-			selector = coreauth.NewSessionAffinitySelectorWithConfig(coreauth.SessionAffinityConfig{
-				Fallback: selector,
-				TTL:      ttl,
-			})
-		}
-
-		s.coreManager.SetSelector(selector)
+		selector = coreauth.NewSessionAffinitySelectorWithConfig(coreauth.SessionAffinityConfig{
+			Fallback: selector,
+			TTL:      ttl,
+		})
 	}
 
-	s.applyRetryConfig(newCfg)
+	s.coreManager.SetSelector(selector)
+}
+
+// Update health-aware routing when config changes (even if selector itself didn't change).
+if s.coreManager != nil {
+	coreauth.SetHealthAwareRouting(newCfg.Routing.HealthAware)
+}
+
+s.applyRetryConfig(newCfg)
 	s.applyPprofConfig(newCfg)
 	if s.server != nil {
 		s.server.UpdateClients(newCfg)
