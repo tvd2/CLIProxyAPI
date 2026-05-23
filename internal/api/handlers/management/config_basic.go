@@ -317,6 +317,14 @@ func (h *Handler) PutRoutingStrategy(c *gin.Context) {
 	h.persist(c)
 }
 
+// HealthAwareRouting
+func (h *Handler) GetHealthAwareRouting(c *gin.Context) {
+	c.JSON(200, gin.H{"health-aware": h.cfg.Routing.HealthAware})
+}
+func (h *Handler) PutHealthAwareRouting(c *gin.Context) {
+	h.updateBoolField(c, func(v bool) { h.cfg.Routing.HealthAware = v })
+}
+
 // Proxy URL
 func (h *Handler) GetProxyURL(c *gin.Context) { c.JSON(200, gin.H{"proxy-url": h.cfg.ProxyURL}) }
 func (h *Handler) PutProxyURL(c *gin.Context) {

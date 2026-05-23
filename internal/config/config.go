@@ -243,7 +243,7 @@ type RoutingConfig struct {
 	// credentials showing signs of exhaustion (high recent failure rate, consecutive
 	// failures, or recent quota errors). When enabled, available auths are sorted
 	// by internal health score before selection. Default: false.
-	HealthAware bool `yaml:"health-aware,omitempty" json:"health-aware,omitempty"`
+	HealthAware bool `yaml:"health-aware" json:"health-aware,omitempty"`
 }
 
 // OAuthModelAlias defines a model ID alias for a specific channel.

@@ -93,6 +93,9 @@ func BuildConfigChangeDetails(oldCfg, newCfg *config.Config) []string {
 	if oldCfg.Routing.Strategy != newCfg.Routing.Strategy {
 		changes = append(changes, fmt.Sprintf("routing.strategy: %s -> %s", oldCfg.Routing.Strategy, newCfg.Routing.Strategy))
 	}
+	if oldCfg.Routing.HealthAware != newCfg.Routing.HealthAware {
+		changes = append(changes, fmt.Sprintf("routing.health-aware: %t -> %t", oldCfg.Routing.HealthAware, newCfg.Routing.HealthAware))
+	}
 	if !reflect.DeepEqual(oldCfg.Payload, newCfg.Payload) {
 		changes = appendPayloadConfigChanges(changes, oldCfg.Payload, newCfg.Payload)
 	}
